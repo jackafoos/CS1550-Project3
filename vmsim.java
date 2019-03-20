@@ -5,6 +5,10 @@ public class vmsim {
     String algorithm = "";
     String traceFile = "";
 
+    int totalMem;   // Total number of memory accesses
+    int pageFaults; // Total number of page faults
+    int writes;     // Total number of writes to disk
+
     // TODO: Get program Arguments
     for(int i = 0; i < args.length; i++){
       if(args[i].equals("-n"))
@@ -21,9 +25,14 @@ public class vmsim {
     System.out.println("-r " + refresh);
     System.out.println(traceFile);
     // Put memory traces into array???
+
+
     // TODO: Select Algorithm
-    // TODO: Run Selected Algorithm
-    // TODO: Read File as you do ??? or see above note on array.
+    // Run Selected Algorithm
+    if(algorithm.equals("opt"))     opt();
+    if(algorithm.equals("fifo"))    fifo();
+    if(algorithm.equals("aging"))    aging();
+
     // TODO: Print to Screen
   }
 
@@ -33,14 +42,24 @@ public class vmsim {
    * Start at 0. Each increment moves further into the accesses. If it hits the
    * end, then it has "infinite time."
    */
+   public static void opt(){
+     System.out.println("OPT!");
+   }
 
   // TODO: FIFO
   /*
    * Self Explanatory...
    */
+   public static void fifo(){
+     System.out.println("FIFO!");
+   }
+
   // TODO: Aging
   /*
    * Relearn...
    */
+   public static void aging(){
+      System.out.println("AGING!");
+   }
 
 }
