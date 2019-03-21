@@ -49,8 +49,6 @@ public class vmsim {
       e.printStackTrace();
     }
 
-
-
     // Run Selected Algorithm
     if(algorithm.equals("opt"))           opt(numFrames, traces);
     else if(algorithm.equals("fifo"))     fifo(numFrames, traces);
@@ -86,20 +84,60 @@ public class vmsim {
        int page = Integer.parseInt(access[1]);
        int cycles = Integer.parseInt(access[2]);
        page = page >> 12; // Isolate the page number from the page offset
+
        // Is it in page table?
        if(optTracker.get(page) == null){ //Page not in table
          pageFaults++;
-         if(framesUsed == numFrames){
+         if(framesUsed == numFrames){ // Page must be evicted
            // Evict a Page
-           // If store, write++
+           int i;
+           int addr = 0; //The address to be evicted
+           for(i = 0; i < memFrames.length; i++){
+             if(optTracker.get(memFrames[i]) > optTracker.get(addr))
+               addr = memFrames[i];
+           }
+           for(i = 0; i < memFrames.length; i++){ //Get index
+             if(memFrames[i] == addr)
+               break;
+           }
+           memFrames[i] = null;
+           optTracker.remove(addr);
+           // If store, writes++
+           if(memOps[i].equals("s"))
+             writes++;
+           memOps[i] = null;
+         }
+         //Actually add the page to the table
+         framesUsed++;
+         int i;
+         for(i = 0; i < memFrames.length; i++){ //Get index
+           if(memFrames[i] == null)
+             break;
          }
          // Add a new page to memFrames
+         memFrames[i] = page;
          // Add mode to memOps
+         memOps[i] = mode;
        } else { // Page already in table
-         // if s, set to s
+         if (mode.equals("s")){
+           for(i = 0; i < memFrames.length; i++){ //Get index
+             if(memFrames[i] == page){
+               memOps[i] = "s";
+               break;
+             }
+           }
+         }
        }
+
        // Iterate through rest of list and find next access
-       // Add to hashtable along with next access
+       for(int i = totalMem, count = 0; i < traces.size(); i++){
+         count++;
+         // Add to hashtable along with next access
+         if(traces.get(i) == page){
+           optTracker.put(page, count);
+           break;
+         }
+       }
 
      }
      String[] ret = {""+totalMem, ""+pageFaults, ""+writes};
@@ -129,5 +167,4 @@ public class vmsim {
      String[] ret = {""+totalMem, ""+pageFaults, ""+writes};
      return ret;
    }
-
 }
