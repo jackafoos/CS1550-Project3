@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.io.FileReader;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.HashMap;
 
 public class vmsim {
   public static void main(String[]args){
@@ -18,7 +19,7 @@ public class vmsim {
     int pageFaults; // Total number of page faults
     int writes;     // Total number of writes to disk
 
-    // TODO: Get program Arguments
+    // Get program Arguments
     for(int i = 0; i < args.length; i++){
       if(args[i].equals("-n"))
         numFrames = Integer.parseInt(args[++i]);
@@ -40,24 +41,26 @@ public class vmsim {
         String addr = line.substring(2, 12);
         String cycles = line.substring(13);
 
-        System.out.println("Mode "+mode+" addr "+addr+" cycles "+cycles);
+        String[] access = {mode, addr, cycles};
+
+        traces.add(access);
       }
     }catch(IOException e){
       e.printStackTrace();
     }
 
+
+
     // Run Selected Algorithm
-    if(algorithm.equals("opt"))           opt();
-    else if(algorithm.equals("fifo"))     fifo();
-    else if(algorithm.equals("aging"))    aging();
+    if(algorithm.equals("opt"))           opt(numFrames, traces);
+    else if(algorithm.equals("fifo"))     fifo(numFrames, traces);
+    else if(algorithm.equals("aging"))    aging(numFrames, traces);
     else{
-      System.out.println("Improper algorithm! Usage -a <opt|fifo|aging>.");
+      System.out.println("Usage ./vmsim -n <numFrames> -a <opt|fifo|aging> -r <refresh> traceFile");
     }
 
     // TODO: Print to Screen
   }
-
-  // When a page is evicted if it's initial instruction was a 'store', write to disk.
 
   // TODO: Opt
   /* As you add to the table, search for the next instance of it in the program
@@ -65,21 +68,66 @@ public class vmsim {
    * Start at 0. Each increment moves further into the accesses. If it hits the
    * end, then it has "infinite time."
    */
-   public static void opt(){
+   public static String[] opt(int numFrames, ArrayList<String[]> traces){
+     int totalMem = 0;
+     int pageFaults = 0;
+     int writes = 0;
+     HashMap<Integer,Integer> optTracker = new HashMap<Integer,Integer>();
+     /* Parallel Arrays matching address acesses and if it has been stored its operation (s/l)
+      * {3ae38, 2900a, 2252f, 223ff}
+      * {  l,     s,     s,     l  } */
+     int[] memFrames = new int[numFrames];
+     String[] memOps = new String[numFrames];
+     int framesUsed = 0;
+
+     for(String[] access : traces){
+       totalMem++;
+       String mode = access[0];
+       int page = Integer.parseInt(access[1]);
+       int cycles = Integer.parseInt(access[2]);
+       page = page >> 12; // Isolate the page number from the page offset
+       // Is it in page table?
+       if(optTracker.get(page) == null){ //Page not in table
+         pageFaults++;
+         if(framesUsed == numFrames){
+           // Evict a Page
+           // If store, write++
+         }
+         // Add a new page to memFrames
+         // Add mode to memOps
+       } else { // Page already in table
+         // if s, set to s
+       }
+       // Iterate through rest of list and find next access
+       // Add to hashtable along with next access
+
+     }
+     String[] ret = {""+totalMem, ""+pageFaults, ""+writes};
+     return ret;
    }
 
   // TODO: FIFO
   /*
    * Self Explanatory...
    */
-   public static void fifo(){
+   public static String[] fifo(int numFrames, ArrayList<String[]> traces){
+     int totalMem = 0;
+     int pageFaults = 0;
+     int writes = 0;
+     String[] ret = {""+totalMem, ""+pageFaults, ""+writes};
+     return ret;
    }
 
   // TODO: Aging
   /*
    * Relearn...
    */
-   public static void aging(){
+   public static String[] aging(int numFrames, ArrayList<String[]> traces){
+     int totalMem = 0;
+     int pageFaults = 0;
+     int writes = 0;
+     String[] ret = {""+totalMem, ""+pageFaults, ""+writes};
+     return ret;
    }
 
 }
