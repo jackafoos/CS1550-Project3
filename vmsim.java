@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Arrays;
 
 public class vmsim {
   public static void main(String[]args){
@@ -38,7 +39,7 @@ public class vmsim {
       BufferedReader br = new BufferedReader(new FileReader(traceFile));
       while((line = br.readLine()) != null){
         String mode = line.substring(0, 1);
-        String addr = line.substring(2, 12);
+        String addr = line.substring(4, 12);
         String cycles = line.substring(13);
 
         String[] access = {mode, addr, cycles};
@@ -81,9 +82,12 @@ public class vmsim {
      for(String[] access : traces){
        totalMem++;
        String mode = access[0];
-       int page = Integer.parseInt(access[1]);
+       int page;
+
+       long temp = Long.parseLong(access[1], 16);
        int cycles = Integer.parseInt(access[2]);
-       page = page >> 12; // Isolate the page number from the page offset
+       temp = temp >>> 12; // Isolate the page number from the page offset
+       page = (int) temp;
 
        // Is it in page table?
        if(optTracker.get(page) == null){ //Page not in table
@@ -91,7 +95,7 @@ public class vmsim {
          if(framesUsed == numFrames){ // Page must be evicted
            // Evict a Page
            int i;
-           int addr = 0; //The address to be evicted
+           int addr = memFrames[0]; //The address to be evicted
            for(i = 0; i < memFrames.length; i++){
              if(optTracker.get(memFrames[i]) > optTracker.get(addr))
                addr = memFrames[i];
@@ -100,18 +104,19 @@ public class vmsim {
              if(memFrames[i] == addr)
                break;
            }
-           memFrames[i] = null;
+           memFrames[i] = 0;
            optTracker.remove(addr);
            // If store, writes++
            if(memOps[i].equals("s"))
              writes++;
-           memOps[i] = null;
+           memOps[i] = "";
+           framesUsed--;
          }
          //Actually add the page to the table
          framesUsed++;
          int i;
          for(i = 0; i < memFrames.length; i++){ //Get index
-           if(memFrames[i] == null)
+           if(memFrames[i] == 0)
              break;
          }
          // Add a new page to memFrames
@@ -120,6 +125,7 @@ public class vmsim {
          memOps[i] = mode;
        } else { // Page already in table
          if (mode.equals("s")){
+           int i;
            for(i = 0; i < memFrames.length; i++){ //Get index
              if(memFrames[i] == page){
                memOps[i] = "s";
@@ -128,18 +134,17 @@ public class vmsim {
            }
          }
        }
-
        // Iterate through rest of list and find next access
-       for(int i = totalMem, count = 0; i < traces.size(); i++){
+       int count = 0;
+       for(int i = totalMem; i < traces.size(); i++){
          count++;
          // Add to hashtable along with next access
-         if(traces.get(i) == page){
-           optTracker.put(page, count);
+         if( (int)((Long.parseLong(traces.get(i)[1], 16) >>> 12) ) == page)
            break;
-         }
        }
-
+       optTracker.put(page, count);
      }
+     System.out.println("accesses: "+totalMem+" PFs: "+pageFaults+" writes: "+writes);
      String[] ret = {""+totalMem, ""+pageFaults, ""+writes};
      return ret;
    }
