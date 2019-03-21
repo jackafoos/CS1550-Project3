@@ -1,3 +1,9 @@
+/* jem319
+ * Virtual Memory simulator
+ * CS1550 project 3
+ */
+import java.util.ArrayList;
+
 public class vmsim {
   public static void main(String[]args){
     int numFrames = 0;
@@ -20,21 +26,35 @@ public class vmsim {
       else
         traceFile = args[i];
     }
-    System.out.println("-n " + numFrames);
-    System.out.println("-a " + algorithm);
-    System.out.println("-r " + refresh);
-    System.out.println(traceFile);
+
     // Put memory traces into array???
+    ArrayList<String[]> traces = new ArrayList<String[]>();
+    try{
+      String line
+      BufferedReader br = new BufferedReader(new FileReader(traceFile));
+      while((line = br.readLine()) != null){
+        String mode = line.substring(0, 1);
+        String addr = line.substring(2, 12);
+        String cycles = line.substring(13);
 
+        System.out.println("Mode "+mode+" addr "+addr+" cycles "+cycles);
+      }
+    }catch(IOException e){
+      e.printStackTrace();
+    }
 
-    // TODO: Select Algorithm
     // Run Selected Algorithm
-    if(algorithm.equals("opt"))     opt();
-    if(algorithm.equals("fifo"))    fifo();
-    if(algorithm.equals("aging"))    aging();
+    if(algorithm.equals("opt"))           opt();
+    else if(algorithm.equals("fifo"))     fifo();
+    else if(algorithm.equals("aging"))    aging();
+    else{
+      System.out.println("Improper algorithm! Usage -a <opt|fifo|aging>.");
+    }
 
     // TODO: Print to Screen
   }
+
+  // When a page is evicted if it's initial instruction was a 'store', write to disk.
 
   // TODO: Opt
   /* As you add to the table, search for the next instance of it in the program
@@ -43,7 +63,6 @@ public class vmsim {
    * end, then it has "infinite time."
    */
    public static void opt(){
-     System.out.println("OPT!");
    }
 
   // TODO: FIFO
@@ -51,7 +70,6 @@ public class vmsim {
    * Self Explanatory...
    */
    public static void fifo(){
-     System.out.println("FIFO!");
    }
 
   // TODO: Aging
@@ -59,7 +77,6 @@ public class vmsim {
    * Relearn...
    */
    public static void aging(){
-      System.out.println("AGING!");
    }
 
 }
