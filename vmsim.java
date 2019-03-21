@@ -3,6 +3,9 @@
  * CS1550 project 3
  */
 import java.util.ArrayList;
+import java.io.FileReader;
+import java.io.BufferedReader;
+import java.io.IOException;
 
 public class vmsim {
   public static void main(String[]args){
@@ -30,7 +33,7 @@ public class vmsim {
     // Put memory traces into array???
     ArrayList<String[]> traces = new ArrayList<String[]>();
     try{
-      String line
+      String line;
       BufferedReader br = new BufferedReader(new FileReader(traceFile));
       while((line = br.readLine()) != null){
         String mode = line.substring(0, 1);
