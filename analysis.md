@@ -23,7 +23,7 @@ For Aging, I will be using `./vmsim -n <FRAMES> -a aging -r 20 tracefile` as dis
 ### swim.trace
 
 |    Frames    |     Opt     |     Fifo      |     Aging     |
-|------------- |------------ | ------------- | -------------|
+|------------- |------------ | ------------- | ------------- |
 |8|0|0|0|
 |16|0|0|0|
 |32|0|0|0|
@@ -31,8 +31,8 @@ For Aging, I will be using `./vmsim -n <FRAMES> -a aging -r 20 tracefile` as dis
 
 ### gzip.trace
 
-    Frames    |     Opt     |     Fifo      |     Aging
-------------- |------------ | ------------- | -------------
+|    Frames    |     Opt     |     Fifo      |     Aging     |
+|------------- |------------ | ------------- | ------------- |
 |8|0|0|0|
 |16|0|0|0|
 |32|0|0|0|
@@ -40,8 +40,8 @@ For Aging, I will be using `./vmsim -n <FRAMES> -a aging -r 20 tracefile` as dis
 
 ### gcc.trace
 
-    Frames    |     Opt     |     Fifo      |     Aging
-------------- |------------ | ------------- | -------------
+|    Frames    |     Opt     |     Fifo      |     Aging     |
+|------------- |------------ | ------------- | ------------- |
 |8|0|0|0|
 |16|0|0|0|
 |32|0|0|0|
