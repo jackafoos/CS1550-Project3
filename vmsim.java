@@ -163,19 +163,8 @@ public class vmsim {
      String[] memOps = new String[numFrames];
      int tail = 0; //End of queue
      boolean inTable = false;
+     
      for(String[] access : traces){
-       //totalMem++;
-       // If not in table:
-       /* pagefaults++;
-        * Check: need to evict?
-          * remove front of list
-          * if 's' -> writes++;
-          * shift both arrays down 1;
-        * Add new one to end of table;
-        */
-        //If In table
-        /* if 's' -> change to s
-         */
          totalMem++;
          String mode = access[0];
          int page;
@@ -219,7 +208,6 @@ public class vmsim {
              memOps[i] = "s";
          }
      }
-
      String[] ret = {""+totalMem, ""+pageFaults, ""+writes};
      return ret;
    }
