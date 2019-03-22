@@ -53,7 +53,7 @@ public class vmsim {
     // Run Selected Algorithm
     if(algorithm.equals("opt"))           opt(numFrames, traces);
     else if(algorithm.equals("fifo"))     fifo(numFrames, traces);
-    else if(algorithm.equals("aging"))    aging(numFrames, traces);
+    else if(algorithm.equals("aging"))    aging(numFrames, traces, refresh);
     else{
       System.out.println("Usage ./vmsim -n <numFrames> -a <opt|fifo|aging> -r <refresh> traceFile");
     }
@@ -61,7 +61,7 @@ public class vmsim {
     // TODO: Print to Screen
   }
 
-  // TODO: Opt
+  // Opt
   /* As you add to the table, search for the next instance of it in the program
    * and add to a hashtable mapping address --> "number of accesses in the future"
    * Start at 0. Each increment moves further into the accesses. If it hits the
@@ -148,7 +148,7 @@ public class vmsim {
      return ret;
    }
 
-  // TODO: FIFO
+  // FIFO
   /*
    * First in First out.
    * Make a simple queue of max size numFrames
@@ -163,7 +163,7 @@ public class vmsim {
      String[] memOps = new String[numFrames];
      int tail = 0; //End of queue
      boolean inTable = false;
-     
+
      for(String[] access : traces){
          totalMem++;
          String mode = access[0];
@@ -213,13 +213,53 @@ public class vmsim {
    }
 
   // TODO: Aging
-  /*
-   * Relearn...
+  /* 3 parts to an iteration:
+      * 1) update clocks if cpu cycles passed
+      * 2) pageFaults (and possibly evict) if not in table
+      * 3) update existing page in table
    */
-   public static String[] aging(int numFrames, ArrayList<String[]> traces){
+   public static String[] aging(int numFrames, ArrayList<String[]> traces, int refresh){
      int totalMem = 0;
      int pageFaults = 0;
      int writes = 0;
+     //Parallel Arrays
+     int[] memFrames = new int[numFrames];
+     String[] memOps = new String[numFrames];
+     byte[] counters = new byte[numFrames];
+     boolean[] refrenced = new boolean[numFrames];
+
+     for(String[] access : traces){
+       totalMem++;
+       String mode = access[0];
+       int page;
+       long temp = Long.parseLong(access[1], 16);
+       int cycles = Integer.parseInt(access[2]);
+       int cycleCount = 0;
+       temp = temp >>> 12; // Isolate the page number from the page offset
+       page = (int) temp;
+
+       // cycleCount += cycles
+       // if cycleCount >=10
+       /* cycleCount = cycleCount - 10;
+        * for all counters, >>> 1
+        * for all counters, if referenced counter |= ref (10000000)
+        */
+       //If not in table
+       /* pageFaults++;
+        * If table full
+          * Evict oldest page
+          * if 's' writes++;
+        * Add page to table
+        * set counter = ref; (10000000)
+        * referenced = false
+        */
+       //Else (if in table)
+       /* referenced = true;
+        * if 's' set to 's'
+        */
+
+     }
+
      String[] ret = {""+totalMem, ""+pageFaults, ""+writes};
      return ret;
    }
