@@ -3,8 +3,7 @@
 # Project 3 Analysis
 
 ## Aging and Refresh
-![Graphing Page Faults by Refresh Rate](/RefreshByPageFaults.png")
-Format: ![Alt Text] (url)
+![Graphing Page Faults by Refresh Rate](RefreshByPageFaults.png)
 
 ## Frames and Page Faults
 
