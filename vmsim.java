@@ -222,11 +222,13 @@ public class vmsim {
      int totalMem = 0;
      int pageFaults = 0;
      int writes = 0;
+
+     int ref = 0x00000080; // 10000000 in binary
      //Parallel Arrays
      int[] memFrames = new int[numFrames];
      String[] memOps = new String[numFrames];
-     byte[] counters = new byte[numFrames];
-     boolean[] refrenced = new boolean[numFrames];
+     int[] counters = new int[numFrames];
+     boolean[] referenced = new boolean[numFrames];
 
      for(String[] access : traces){
        totalMem++;
@@ -238,12 +240,16 @@ public class vmsim {
        temp = temp >>> 12; // Isolate the page number from the page offset
        page = (int) temp;
 
-       // cycleCount += cycles
-       // if cycleCount >=10
-       /* cycleCount = cycleCount - 10;
-        * for all counters, >>> 1
-        * for all counters, if referenced counter |= ref (10000000)
-        */
+        //Update internal clocks
+        cycleCount += cycles;
+        if(cycleCount >= refresh){
+          for(int i = 0; i < counters.length; i++){
+            counters[i] = counters[i] >>> 1;
+            //if the page was accessed, put a 1 in the MSB
+            if(referenced[i] == true)
+              counters[i] = counters[i] | ref;
+          }
+        }
        //If not in table
        /* pageFaults++;
         * If table full
