@@ -144,19 +144,38 @@ public class vmsim {
        }
        optTracker.put(page, count);
      }
-     System.out.println("accesses: "+totalMem+" PFs: "+pageFaults+" writes: "+writes);
      String[] ret = {""+totalMem, ""+pageFaults, ""+writes};
      return ret;
    }
 
   // TODO: FIFO
   /*
-   * Self Explanatory...
+   * First in First out.
+   * Make a simple queue of max size numFrames
    */
    public static String[] fifo(int numFrames, ArrayList<String[]> traces){
      int totalMem = 0;
      int pageFaults = 0;
      int writes = 0;
+     // "Queues" add to end remove from front and shift down one
+     //Should keep track of current end of list
+     int[] memFrames = new int[numFrames];
+     String[] memOps = new String[numFrames];
+     for(String[] access : traces){
+       //totalMem++;
+       // If not in table:
+       /* pagefaults++;
+        * Check: need to evict?
+          * remove front of list
+          * if 's' -> writes++;
+          * shift both arrays down 1;
+        * Add new one to end of table;
+        */
+        //If In table
+        /* if 's' -> change to s
+         */
+     }
+
      String[] ret = {""+totalMem, ""+pageFaults, ""+writes};
      return ret;
    }
