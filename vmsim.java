@@ -7,7 +7,6 @@ import java.io.FileReader;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Arrays;
 
 public class vmsim {
   public static void main(String[]args){
@@ -50,23 +49,26 @@ public class vmsim {
       e.printStackTrace();
     }
 
+    String[] ret = new String[3];
     // Run Selected Algorithm
-    if(algorithm.equals("opt"))           opt(numFrames, traces);
-    else if(algorithm.equals("fifo"))     fifo(numFrames, traces);
-    else if(algorithm.equals("aging"))    aging(numFrames, traces, refresh);
+    if(algorithm.equals("opt"))           ret = opt(numFrames, traces);
+    else if(algorithm.equals("fifo"))     ret = fifo(numFrames, traces);
+    else if(algorithm.equals("aging"))    ret = aging(numFrames, traces, refresh);
     else{
       System.out.println("Usage ./vmsim -n <numFrames> -a <opt|fifo|aging> -r <refresh> traceFile");
     }
 
-    // TODO: Print to Screen
+    // Print to Screen
+    System.out.println("Algorithm:\t"+algorithm.toUpperCase());
+    System.out.println("Number of Frames:\t"+numFrames);
+    System.out.println("Total memory accesses:\t"+ret[0]);
+    System.out.println("Total page faults:\t"+ret[1]);
+    System.out.println("Total writes to disk:\t"+ret[2]);
   }
 
-  // Opt
-  /* As you add to the table, search for the next instance of it in the program
-   * and add to a hashtable mapping address --> "number of accesses in the future"
-   * Start at 0. Each increment moves further into the accesses. If it hits the
-   * end, then it has "infinite time."
-   */
+  /*****************************************************************************
+   ********************************** OPT **************************************
+   *****************************************************************************/
    public static String[] opt(int numFrames, ArrayList<String[]> traces){
      int totalMem = 0;
      int pageFaults = 0;
@@ -148,11 +150,9 @@ public class vmsim {
      return ret;
    }
 
-  // FIFO
-  /*
-   * First in First out.
-   * Make a simple queue of max size numFrames
-   */
+  /*****************************************************************************
+   *********************************** FIFO ************************************
+   *****************************************************************************/
    public static String[] fifo(int numFrames, ArrayList<String[]> traces){
      int totalMem = 0;
      int pageFaults = 0;
@@ -212,12 +212,9 @@ public class vmsim {
      return ret;
    }
 
-  // TODO: Aging
-  /* 3 parts to an iteration:
-      * 1) update clocks if cpu cycles passed
-      * 2) pageFaults (and possibly evict) if not in table
-      * 3) update existing page in table
-   */
+  /*****************************************************************************
+   *********************************** Aging ***********************************
+   *****************************************************************************/
    public static String[] aging(int numFrames, ArrayList<String[]> traces, int refresh){
      int totalMem = 0;
      int pageFaults = 0;
