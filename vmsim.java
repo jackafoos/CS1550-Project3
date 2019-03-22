@@ -239,6 +239,7 @@ public class vmsim {
        int cycleCount = 0;
        temp = temp >>> 12; // Isolate the page number from the page offset
        page = (int) temp;
+       int indexOfPage = -1;
 
         //Update internal clocks
         cycleCount += cycles;
@@ -250,20 +251,57 @@ public class vmsim {
               counters[i] = counters[i] | ref;
           }
         }
-       //If not in table
-       /* pageFaults++;
-        * If table full
-          * Evict oldest page
-          * if 's' writes++;
-        * Add page to table
-        * set counter = ref; (10000000)
-        * referenced = false
-        */
-       //Else (if in table)
-       /* referenced = true;
-        * if 's' set to 's'
-        */
 
+       for (int i = 0; i < memFrames.length; i++){
+         if(memFrames[i] == page){
+           indexOfPage = i;
+           break;
+         }
+       }
+
+       if(indexOfPage == -1){ // If not in table
+         /* Add page to table
+          * set counter = ref; (10000000)
+          * referenced = false
+          */
+          pageFaults++;
+          boolean full = true;
+          for (int i = 0; i < memFrames.length; i++){
+            if(memFrames[i] == 0){
+              full = false;
+              indexOfPage = i;
+              break;
+            }
+          }
+          if (full){ //If the table is full
+            indexOfPage = 0; //the page to evict and later fill in.
+            for (int i = 0; i < memFrames.length; i++){
+              if(counters[i] < counters[indexOfPage])
+                indexOfPage = i;
+              else if (counters[i] == counters[indexOfPage] && memFrames[i] < memFrames[indexOfPage])
+                indexOfPage = i;
+            }
+            // Evict page
+            if(memOps[indexOfPage].equals("s"))
+              writes++;
+            memFrames[indexOfPage] = 0;
+            memOps[indexOfPage] = "";
+            counters[indexOfPage] = 0;
+            referenced[indexOfPage] = false;
+          }
+          // Add page to table
+          memFrames[indexOfPage] = page;
+          memOps[indexOfPage] = mode;
+          counters[indexOfPage] = ref;
+          referenced[indexOfPage] = false;
+       } else { // Else (if in table)
+         /* referenced = true;
+          * if 's' set to 's'
+          */
+          referenced[indexOfPage] = true;
+          if(mode.equals("s"))
+            memOps[indexOfPage] = "s";
+       }
      }
 
      String[] ret = {""+totalMem, ""+pageFaults, ""+writes};
