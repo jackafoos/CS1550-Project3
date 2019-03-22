@@ -4,6 +4,7 @@
 
 ## Aging and Refresh
 ![Graphing Page Faults by Refresh Rate] (/RefreshByPageFaults.png")
+Format: ![Alt Text](url)
 
 ## Frames and Page Faults
 
