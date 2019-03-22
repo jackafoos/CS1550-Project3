@@ -44,8 +44,8 @@ For Aging, I will be using `./vmsim -n <FRAMES> -a aging -r 20 tracefile` as dis
 |------------- |------------ | ------------- | ------------- |
 |8|14293|190684|159964|
 |16|3273|190684|144684|
-|32|502|190684|67332|
-|64|327|190684|93810|
+|32|502|190684|**67332**|
+|64|327|190684|**93810**|
 
 ### Conclusion
 The Most useful algorithm in an actual operating system using this data would have to be
@@ -53,3 +53,6 @@ an **Aging** algorithm. Opt is clearly the best performing algorithm in terms of
 it is slow and clunky and it is impractical to use. Fifo gets very bad performance and the number of frames doesn't improve the number of page faults. It is consistently lower than Aging.
 
 ## Fifo and Belady's Anomaly
+There is one instance of Belady's anomaly in my results. Under the Aging column of the
+**gcc.trace** section at 32 frames the number of page faults was 67,332. but when increasing
+the amount of memory to 64 frames, the number of page faults increased to 93,810.
