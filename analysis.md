@@ -18,33 +18,33 @@ to go with this option as the average number of page faults is much lower than t
 
 Here are the statistics for running each algorithm on each trace file provided.
 I will be using Opt as a baseline measure in which to discuss Fifo and Aging.
-For Aging, I will be using `./vmsim -n <FRAMES> -a aging -r 20 tracefile` as discussed in the above section. 
+For Aging, I will be using `./vmsim -n <FRAMES> -a aging -r 20 tracefile` as discussed in the above section.
 
 ### swim.trace
 
     Frames    |     Opt     |     Fifo      |     Aging
 ------------- |------------ | ------------- | -------------
-8|||
-16|||
-32|||
-64|||
+8|0|0|0
+16|0|0|0
+32|0|0|0
+64|0|0|0
 
 ### gzip.trace
 
     Frames    |     Opt     |     Fifo      |     Aging
 ------------- |------------ | ------------- | -------------
-8|||
-16|||
-32|||
-64|||
+8|0|0|0
+16|0|0|0
+32|0|0|0
+64|0|0|0
 
 ### gcc.trace
 
     Frames    |     Opt     |     Fifo      |     Aging
 ------------- |------------ | ------------- | -------------
-8|||
-16|||
-32|||
-64|||
+8|0|0|0
+16|0|0|0
+32|0|0|0
+64|0|0|0
 
 ## Fifo and Belady's Anomaly
