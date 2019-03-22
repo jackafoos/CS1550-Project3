@@ -161,6 +161,8 @@ public class vmsim {
      //Should keep track of current end of list
      int[] memFrames = new int[numFrames];
      String[] memOps = new String[numFrames];
+     int tail = 0; //End of queue
+     boolean inTable = false;
      for(String[] access : traces){
        //totalMem++;
        // If not in table:
@@ -174,6 +176,48 @@ public class vmsim {
         //If In table
         /* if 's' -> change to s
          */
+         totalMem++;
+         String mode = access[0];
+         int page;
+         long temp = Long.parseLong(access[1], 16);
+         int cycles = Integer.parseInt(access[2]);
+         temp = temp >>> 12; // Isolate the page number from the page offset
+         page = (int) temp;
+         for(int i = 0; i < tail; i++){
+           if (memFrames[i] == page)
+             inTable = true;
+           else
+             inTable = false;
+         }
+         if (!inTable){ // Not in table
+           pageFaults++;
+           if(tail == memFrames.length){// Need to evict a page
+             memFrames[0] = 0; //Evict Page
+             if (memOps[0].equals("s"))
+               writes++; //Write to disk if it was a store instruction
+             memOps[0] = "";
+             //Shift Queues down one to make room at end
+             int[] tempFrames = new int[numFrames];
+             String[] tempOps = new String[numFrames];
+             System.arraycopy(memFrames, 1, tempFrames, 0, tail - 1);
+             memFrames = tempFrames;
+             System.arraycopy(memOps, 1, tempOps, 0, tail - 1);
+             memOps = tempOps;
+             tail--;
+           }
+           //Add page to table
+           memFrames[tail] = page;
+           memOps[tail] = mode;
+           tail++;
+         } else { // Page already in table
+           int i;
+           for(i = 0; i < tail; i++){
+             if (memFrames[i] == page)
+               break;
+           }
+           if(mode.equals("s"))
+             memOps[i] = "s";
+         }
      }
 
      String[] ret = {""+totalMem, ""+pageFaults, ""+writes};
